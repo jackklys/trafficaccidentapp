@@ -47,12 +47,28 @@ app = dash.Dash(__name__)
 server = app.server
 
 app.layout = html.Div([
-	html.Div(id='root', style={'width': '90%', 'padding-left': '5%', 'padding-right': '5%'}, children=[
+	html.Div(id='root', style={'width': '90%', 'padding-left': '5%', 'padding-right': '5%', 'padding-bottom': '3%', 'float': 'left'}, children=[
 		html.Div(id="header", children=[
-                html.H1(children="U.S. Vehicle Accident Fatalities"),
-                html.P(id="description", 
-                	children="Historical data for 2012-2018 obtained from FARS. \
-                	The model predicts the expected number of fatal accidents over a year of time. "),
+            html.H1(children="U.S. Vehicle Accident Fatalities"),
+            html.P(
+            	children=["A heatmap of accidents per county in the U.S. involving at least one fatality.",
+            	html.Br(),
+            	"Historical data for 2012-2018 obtained from ",
+            	html.A(href='https://www.nhtsa.gov/research-data/fatality-analysis-reporting-system-fars', children="NHTSA.\n"),
+            	html.Br(),
+            	html.Br(),
+            	"Use the sliders to specify constraints on the time of occurence of the accidents.",
+            	html.Br(),
+            	"The model predicts the total expected number of fatal accidents satisfying the selected constraints, over a year of time.",
+            ]),
+			# html.P( 
+   #          	children=[
+   #          	"Use the sliders to specify constraints on the time of occurence of the accidents.",
+   #          ]),
+   #          html.P( 
+   #          	children=[
+   #          	'The model predicts the total expected number of fatal accidents satisfying the selected constraints, over a year of time.',
+   #          ]),
         ]),
 		html.Div(id='map-container', style={'width': '64%', 'float': 'right'}, children=[
 			dcc.Graph(id='map', figure=fig_initial)
@@ -93,7 +109,17 @@ app.layout = html.Div([
 			    	step=None
 			    )
 			])
-		])
+		]),
+	]),
+	html.Div(id='footer', style={'width': '90%', 'padding-left': '5%', 'padding-right': '5%'}, children=[
+        html.H3(children="Notes"),
+        html.P(
+        	children=["1. Data is transformed by log(x+1) for the visualization.",
+        	html.Br(),
+        	"2. The prediction model is a random forest fitted on the data from years 2012-2017. See the ",
+        	html.A(href='https://github.com/jackklys/trafficaccidentapp', children='github repo'),
+        	" for more details."
+        ])
 	])
 ])
 
@@ -143,4 +169,4 @@ def draw_map(year, day_week, hour, mode, figure):
 	return figure
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    server.run(host='0.0.0.0', debug=True)
